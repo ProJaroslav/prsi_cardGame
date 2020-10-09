@@ -12,6 +12,7 @@ function shuffle(array) {
 let cards = [];
 
 let deck = [];
+let start_button = document.querySelector("#start_button").addEventListener("click", createGame)
 
 
 let hand = [];
@@ -29,6 +30,11 @@ function createGame(){
             cards.push(new_card);
         }
     }
+
+
+    createHand();
+    let test = document.querySelector("#start_button");
+    test.remove();
 }
 
 
@@ -42,6 +48,8 @@ function createHand(){
 }
 
 //function play(){}
-createGame()
-createHand()
+
+
+
+//createHand()
 console.log(cards)
