@@ -1,55 +1,141 @@
-function Card(name, type, number) {
-    this.name = name
-    this.type = type,
-    this.number = number
+const start_button = document.querySelector("#start_button");
+const player1_space = document.querySelector(".Player1");
+const deck_div = document.querySelector(".deck");
+const player1_div = document.querySelector(".player1");
+const playfield_div = document.querySelector(".playfield");
+
+
+class Card {
+    constructor(name, type, number) {
+        this.name = name,
+        this.type = type,
+        this.number = number
+    }
 }
 
-function shuffle(array) {
-    array.sort(() => Math.random() - 0.5);
-  }
+class Deck {
+    
+    constructor(){
 
+        this.card_deck = [];
+    }
 
-let cards = [];
+    shuffle() {
+        this.card_deck.sort(() => Math.random() - 0.5);
+    }
 
-let deck = [];
-let start_button = document.querySelector("#start_button").addEventListener("click", createGame)
+    createDeck(){
+        let colors = ["srdce", "zalud", "varlata", "zeleny"];
+        let number = ["7", "8", "9", "10", "spodek", "vrsek", "kral"]
+    
+        for (let i = 0; i < 4; i ++) {
+            for (let j = 0; j < 7; j ++) {
+                let name = colors[i] + "_" + number[j];
+                let new_card = new Card(name, colors[i], number[j])
+                this.card_deck.push(new_card);
+            }
+        }        
+    }
+    dealCard(){
+        return this.card_deck.pop()                
+    }
+}
 
+class Player {
 
-let hand = [];
-let player1_space = document.querySelector(".Player1")
+    constructor(name) {
+        this.name = name;
+        this.hand = [];
+    }
+}
 
+/**
+ * 
+ * @param {Player} player 
+ * @param {number} amount
+ * @param {Deck} deck 
+ */
+function dealCards(deck, player, amount) {
+    for (let i = 0; i < amount; i++) {
+        let dealt_card = deck.dealCard();
+        player.hand.push(dealt_card);
+    }
 
-function createGame(){
-    let druhy = ["srdce", "zalud", "varlata", "zeleny"];
-    let typy = ["7", "8", "9", "10", "spodek", "vrsek", "kral"]
-    let cisla = [7, 8, 9, 10, 11, 12, 13]
+}
 
-    for (let druh = 0; druh < 4; druh ++) {
-        for (let cislo = 0; cislo < 7; cislo ++) {
-            let new_card = new Card(druhy[druh], cisla[cislo], typy[cislo])
-            cards.push(new_card);
+/**
+ * 
+ * @param {Player} player 
+ */
+function renderHand(player) {
+    player1_div.innerHTML = "";
+    for (let card of player.hand ) {
+        let card_placeholder = document.createElement("div");
+        card_placeholder.classList.add("card");
+        card_placeholder.textContent = card.name;
+        player1_div.appendChild(card_placeholder);
+    }
+}
+
+/**
+ * 
+ * @param {Deck} deck 
+ */
+function renderTopCardFromDeck(deck) {
+    playfield_div.innerHTML = "";
+    let card = deck.dealCard();
+    topcard = card;
+    let card_placeholder = document.createElement("div");
+    card_placeholder.classList.add("card");
+    card_placeholder.textContent = card.name;
+    playfield_div.appendChild(card_placeholder);
+
+}
+
+/**
+ * 
+ * @param {Player} computer 
+ */
+function computerMove(computer) {
+        let flag = true;
+        computer.hand = computer.hand.filter(card => {
+            if ((card.type === topcard.type || card.number === topcard.number) && flag) {
+                topcard = card;
+                flag = false;
+                return false
+            }
+            else return true
         }
-    }
-
-
-    createHand();
-    let test = document.querySelector("#start_button");
-    test.remove();
+    ) 
+    console.log(computer.hand);
+    
 }
 
+const deck = new Deck();
+let topcard = null;
+const player1 = new Player("pl1");
+const computer = new Player("computer");
+deck.createDeck();
 
-function createHand(){
-    shuffle(cards);
-    for (let counter = 0; counter < 4; counter ++) {
-        player1_space.textContent += cards[counter].name + "_" + cards[counter].number + " ";
-    }
+start_button.addEventListener("click", () => {
+    deck.shuffle();
+    dealCards(deck, player1, 4);
+    dealCards(deck, computer, 4);
+    console.log(computer.hand);
+    start_button.remove();
+    renderTopCardFromDeck(deck);    
+    renderHand(player1);
+    checker(computer);
+});
+
+deck_div.addEventListener("click", () => {
+    dealCards(deck, player1, 1);
+    console.log(player1.hand);
+    renderHand(player1);    
+})
 
 
-}
-
-//function play(){}
 
 
 
-//createHand()
-console.log(cards)
+

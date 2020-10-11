@@ -1,0 +1,13 @@
+.deck {
+    height: 50px;
+    width: 100px;
+    background-color: aqua;
+    margin: 50px;
+}
+
+.card {
+    height: 25px;
+    width: 80px;
+    background-color: whitesmoke;
+    margin: 10px;
+}
